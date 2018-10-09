@@ -5,7 +5,7 @@
 ## Default variables to use
 export INTERACTIVE=${INTERACTIVE:="true"}
 export PVS=${INTERACTIVE:="true"}
-export DOMAIN=${DOMAIN:="$(curl -s ipinfo.io/ip).nip.io"}
+export DOMAIN=${DOMAIN:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}').nip.io"}
 export USERNAME=${USERNAME:="$(whoami)"}
 export PASSWORD=${PASSWORD:=password}
 export VERSION=${VERSION:="3.9.0"}
