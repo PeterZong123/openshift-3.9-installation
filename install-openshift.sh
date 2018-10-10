@@ -59,6 +59,10 @@ yum install -y  wget git zile nano net-tools docker-1.13.1\
 				python-cryptography python2-pip python-devel  python-passlib \
 				java-1.8.0-openjdk-headless "@Development Tools"
 
+#install dnsmasq and config dns
+yum -y install dnsmasq
+nmcli dev show | grep IP4.DNS | sed -e 's/IP4.DNS\[1\]:/server=/g' | sed -e 's/ //g' > /etc/dnsmasq.d/origin-upstream-dns.conf
+
 #install epel
 yum -y install epel-release
 
