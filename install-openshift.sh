@@ -93,6 +93,10 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 	ssh -o StrictHostKeyChecking=no root@$IP "pwd" < /dev/null
 fi
 
+# pull images
+docker image pull openshift/node:v3.9.0
+
+
 export METRICS="True"
 export LOGGING="True"
 
