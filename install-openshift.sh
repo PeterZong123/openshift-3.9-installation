@@ -63,21 +63,21 @@ yum install -y  wget git zile nano net-tools docker-1.13.1\
 #yum -y install dnsmasq
 #nmcli dev show | grep IP4.DNS | sed -e 's/IP4.DNS\[1\]:/server=/g' | sed -e 's/ //g' > /etc/dnsmasq.d/origin-upstream-dns.conf
 
-cat > /etc/dbus-1/system.d/dnsmasq.conf <<EOF
-<!DOCTYPE busconfig PUBLIC
- "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
- "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
-<busconfig>
-        <policy user="root">
-                <allow own="uk.org.thekelleys.dnsmasq"/>
-                <allow send_destination="uk.org.thekelleys.dnsmasq"/>
-        </policy>
-        <policy context="default">
-                <deny own="uk.org.thekelleys.dnsmasq"/>
-                <deny send_destination="uk.org.thekelleys.dnsmasq"/>
-        </policy>
-</busconfig>
-EOF
+#cat > /etc/dbus-1/system.d/dnsmasq.conf <<EOF
+#<!DOCTYPE busconfig PUBLIC
+# "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+# "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+#<busconfig>
+#        <policy user="root">
+#                <allow own="uk.org.thekelleys.dnsmasq"/>
+#                <allow send_destination="uk.org.thekelleys.dnsmasq"/>
+#        </policy>
+#        <policy context="default">
+#                <deny own="uk.org.thekelleys.dnsmasq"/>
+#                <deny send_destination="uk.org.thekelleys.dnsmasq"/>
+#        </policy>
+#</busconfig>
+#EOF
 
 #install epel
 yum -y install epel-release
