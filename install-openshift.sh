@@ -117,18 +117,9 @@ fi
 #docker image pull openshift/node:v3.9.0
 
 
-export METRICS="True"
-export LOGGING="True"
+export METRICS="False"
+export LOGGING="False"
 
-memory=$(cat /proc/meminfo | grep MemTotal | sed "s/MemTotal:[ ]*\([0-9]*\) kB/\1/")
-
-if [ "$memory" -lt "4194304" ]; then
-	export METRICS="False"
-fi
-
-if [ "$memory" -lt "8388608" ]; then
-	export LOGGING="False"
-fi
 
 curl -o inventory.download $SCRIPT_REPO/inventory.ini
 envsubst < inventory.download > inventory.ini
