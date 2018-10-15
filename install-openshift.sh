@@ -59,26 +59,6 @@ yum install -y  wget git zile nano net-tools docker-1.13.1\
 				python-cryptography python2-pip python-devel  python-passlib \
 				java-1.8.0-openjdk-headless "@Development Tools"
 
-#install dnsmasq and config dns
-#yum -y install dnsmasq
-#nmcli dev show | grep IP4.DNS | sed -e 's/IP4.DNS\[1\]:/server=/g' | sed -e 's/ //g' > /etc/dnsmasq.d/origin-upstream-dns.conf
-
-#cat > /etc/dbus-1/system.d/dnsmasq.conf <<EOF
-#<!DOCTYPE busconfig PUBLIC
-# "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
-# "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
-#<busconfig>
-#        <policy user="root">
-#                <allow own="uk.org.thekelleys.dnsmasq"/>
-#                <allow send_destination="uk.org.thekelleys.dnsmasq"/>
-#        </policy>
-#        <policy context="default">
-#                <deny own="uk.org.thekelleys.dnsmasq"/>
-#                <deny send_destination="uk.org.thekelleys.dnsmasq"/>
-#        </policy>
-#</busconfig>
-#EOF
-
 #install epel
 yum -y install epel-release
 
@@ -114,9 +94,23 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 fi
 
 # pull images
-#docker image pull openshift/node:v3.9.0
+docker image pull cockpit/kubernetes:latest
+docker image pull registry.fedoraproject.org/latest/etcd:latest
+docker image pull openshift/node:v3.9.0
+docker image pull openshift/origin-web-console:v3.9.0
+docker image pull openshift/origin-docker-registry:v3.9.0
+docker image pull openshift/openvswitch:v3.9.0
+docker image pull openshift/origin-haproxy-router:v3.9.0
+docker image pull openshift/origin-deployer:v3.9.0
+docker image pull openshift/origin:v3.9.0
+docker image pull openshift/origin-template-service-broker:v3.9.0
+docker image pull openshift/origin-pod:v3.9.0
+docker image pull openshift/origin-service-catalog:3.9
+docker image pull openshift/origin-metrics-cassandra:v3.9
+docker image pull openshift/origin-metrics-hawkular-metrics:v3.9
+docker image pull openshift/origin-metrics-heapster:v3.9
 
-
+# install OpenShift
 export METRICS="False"
 export LOGGING="False"
 
