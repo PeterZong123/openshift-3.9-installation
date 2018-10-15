@@ -1,15 +1,16 @@
 #!/bin/bash
 
-## Default variables to use
+# default variables to use
 export INTERACTIVE=${INTERACTIVE:="true"}
 export DOMAIN=${DOMAIN:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}').nip.io"}
+export IP=${IP:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"}
+export API_PORT=${API_PORT:="8443"}
 export USERNAME=${USERNAME:="$(whoami)"}
 export PASSWORD=${PASSWORD:=password}
 export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/PeterZong123/openshift-3.9-installation/master"}
-export IP=${IP:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"}
-export API_PORT=${API_PORT:="8443"}
+export ANSIBLE_PLAYBOOKS_REPO=${ANSIBLE_PLAYBOOKS_REPO:="https://github.com/PeterZong123/openshift-ansible.git"}
 
-## Make the script interactive to set the variables
+# make the script interactive to set the variables
 if [ "$INTERACTIVE" = "true" ]; then
 	read -rp "Domain to use: ($DOMAIN): " choice;
 	if [ "$choice" != "" ] ; then
@@ -36,8 +37,12 @@ if [ "$INTERACTIVE" = "true" ]; then
 		export API_PORT="$choice";
 	fi 
 
-	echo
+	read -rp "Ansible Playbooks Repo: ($ANSIBLE_PLAYBOOKS_REPO): " choice;
+	if [ "$choice" != "" ] ; then
+		export ANSIBLE_PLAYBOOKS_REPO="$choice";
+	fi 
 
+	echo
 fi
 
 echo "******"
@@ -45,6 +50,7 @@ echo "* Your domain is $DOMAIN "
 echo "* Your IP is $IP "
 echo "* Your username is $USERNAME "
 echo "* Your password is $PASSWORD "
+echo "* Ansible Playbooks Repo is $ANSIBLE_PLAYBOOKS_REPO "
 echo "******"
 
 # install updates
@@ -59,12 +65,13 @@ yum install -y  wget git zile nano net-tools docker-1.13.1\
 				python-cryptography python2-pip python-devel  python-passlib \
 				java-1.8.0-openjdk-headless "@Development Tools"
 
-#install epel
+# install epel
 yum -y install epel-release
 
-# Disable the EPEL repository globally so that is not accidentally used during later steps of the installation
+# disable the EPEL repository globally so that is not accidentally used during later steps of the installation
 sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
 
+# start NetworkManager
 systemctl | grep "NetworkManager.*running" 
 if [ $? -eq 1 ]; then
 	systemctl start NetworkManager
@@ -74,19 +81,23 @@ fi
 # install the packages for Ansible
 yum -y --enablerepo=epel install ansible pyOpenSSL
 
-[ ! -d openshift-ansible ] && git clone https://github.com/PeterZong123/openshift-ansible.git
+# clone openshift ansible playbooks
+[ ! -d openshift-ansible ] && git clone $ANSIBLE_PLAYBOOKS_REPO
 
 cd openshift-ansible && git fetch && git checkout release-3.9 && cd ..
 
+# modify hosts
 cat <<EOD > /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 ${IP}		$(hostname) console console.${DOMAIN}  
 EOD
 
+# restart docker
 systemctl restart docker
 systemctl enable docker
 
+# generate ssh key
 if [ ! -f ~/.ssh/id_rsa ]; then
 	ssh-keygen -q -f ~/.ssh/id_rsa -N ""
 	cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
@@ -110,17 +121,19 @@ docker image pull openshift/origin-metrics-cassandra:v3.9
 docker image pull openshift/origin-metrics-hawkular-metrics:v3.9
 docker image pull openshift/origin-metrics-heapster:v3.9
 
-# install OpenShift
+# enable/disable metrics and logging
 export METRICS="False"
 export LOGGING="False"
 
-
+# download inventory.ini
 curl -o inventory.download $SCRIPT_REPO/inventory.ini
 envsubst < inventory.download > inventory.ini
 
+# run playbooks to deploy openshift
 ansible-playbook -i inventory.ini openshift-ansible/playbooks/prerequisites.yml
 ansible-playbook -i inventory.ini openshift-ansible/playbooks/deploy_cluster.yml
 
+# post-deployment
 htpasswd -b /etc/origin/master/htpasswd ${USERNAME} ${PASSWORD}
 oc adm policy add-cluster-role-to-user cluster-admin ${USERNAME}
 
