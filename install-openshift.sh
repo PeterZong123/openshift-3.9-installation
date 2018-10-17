@@ -79,11 +79,16 @@ if [ $? -eq 1 ]; then
 fi
 
 # install the packages for Ansible
-yum -y --enablerepo=epel install ansible pyOpenSSL
+yum -y --enablerepo=epel install pyOpenSSL
 
-yum -y erase ansible
-wget http://cbs.centos.org/kojifiles/packages/ansible/2.5.3/1.el7/noarch/ansible-2.5.3-1.el7.noarch.rpm
-yum -y install ansible-2.5.3-1.el7.noarch.rpm
+#yum -y erase ansible
+#wget http://cbs.centos.org/kojifiles/packages/ansible/2.5.3/1.el7/noarch/ansible-2.5.3-1.el7.noarch.rpm
+#yum -y install ansible-2.5.3-1.el7.noarch.rpm
+
+wget https://releases.ansible.com/ansible/ansible-2.5.5.tar.gz
+tar xvzf ansible-2.5.5.tar.gz
+cd ansible-2.5.5/
+python setup.py install
 
 # clone openshift ansible playbooks
 [ ! -d openshift-ansible ] && git clone $ANSIBLE_PLAYBOOKS_REPO
