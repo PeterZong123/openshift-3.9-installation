@@ -3,6 +3,7 @@
 yum -y install wget
 
 wget https://raw.githubusercontent.com/PeterZong123/openshift-3.9-installation/master/vm-prerequisites.sh
+
 wget https://raw.githubusercontent.com/PeterZong123/openshift-3.9-installation/master/vm-deployopenshift.sh
 
 sh vm-prerequisites.sh
