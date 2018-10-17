@@ -7,6 +7,7 @@ wget https://raw.githubusercontent.com/PeterZong123/openshift-3.9-installation/m
 wget https://raw.githubusercontent.com/PeterZong123/openshift-3.9-installation/master/vm-deployopenshift.sh
 
 sh vm-prerequisites.sh
+
 sh vm-deployopenshift.sh
 
 -------------------------------------------------------
