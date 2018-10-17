@@ -9,6 +9,8 @@ export USERNAME=${USERNAME:="$(whoami)"}
 export PASSWORD=${PASSWORD:=password}
 export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/PeterZong123/openshift-3.9-installation/master"}
 export ANSIBLE_PLAYBOOKS_REPO=${ANSIBLE_PLAYBOOKS_REPO:="https://github.com/PeterZong123/openshift-ansible.git"}
+export METRICS=${METRICS:="False"}
+export LOGGING=${LOGGING:="False"}
 
 # make the script interactive to set the variables
 if [ "$INTERACTIVE" = "true" ]; then
@@ -40,6 +42,16 @@ if [ "$INTERACTIVE" = "true" ]; then
 	read -rp "Ansible Playbooks Repo: ($ANSIBLE_PLAYBOOKS_REPO): " choice;
 	if [ "$choice" != "" ] ; then
 		export ANSIBLE_PLAYBOOKS_REPO="$choice";
+	fi 
+
+	read -rp "Enable Metrics: ($METRICS): " choice;
+	if [ "$choice" != "" ] ; then
+		export METRICS="$choice";
+	fi 
+
+	read -rp "Enable Logging: ($LOGGING): " choice;
+	if [ "$choice" != "" ] ; then
+		export LOGGING="$choice";
 	fi 
 
 	echo
@@ -130,10 +142,6 @@ docker image pull openshift/origin-service-catalog:3.9
 docker image pull openshift/origin-metrics-cassandra:v3.9
 docker image pull openshift/origin-metrics-hawkular-metrics:v3.9
 docker image pull openshift/origin-metrics-heapster:v3.9
-
-# enable/disable metrics and logging
-export METRICS="False"
-export LOGGING="False"
 
 # download inventory.ini
 curl -o inventory.download $SCRIPT_REPO/inventory.ini
