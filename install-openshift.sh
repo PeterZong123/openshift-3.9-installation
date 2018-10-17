@@ -89,6 +89,7 @@ wget https://releases.ansible.com/ansible/ansible-2.5.5.tar.gz
 tar xvzf ansible-2.5.5.tar.gz
 cd ansible-2.5.5/
 python setup.py install
+cd ..
 
 # clone openshift ansible playbooks
 [ ! -d openshift-ansible ] && git clone $ANSIBLE_PLAYBOOKS_REPO
