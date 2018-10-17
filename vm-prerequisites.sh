@@ -5,8 +5,6 @@ export INTERACTIVE=${INTERACTIVE:="true"}
 export DOMAIN=${DOMAIN:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}').nip.io"}
 export IP=${IP:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"}
 export API_PORT=${API_PORT:="8443"}
-export USERNAME=${USERNAME:="$(whoami)"}
-export PASSWORD=${PASSWORD:=password}
 export ANSIBLE_PLAYBOOKS_REPO=${ANSIBLE_PLAYBOOKS_REPO:="https://github.com/PeterZong123/openshift-ansible.git"}
 export METRICS=${METRICS:="False"}
 export LOGGING=${LOGGING:="False"}
@@ -16,16 +14,6 @@ if [ "$INTERACTIVE" = "true" ]; then
 	read -rp "Domain to use: ($DOMAIN): " choice;
 	if [ "$choice" != "" ] ; then
 		export DOMAIN="$choice";
-	fi
-
-	read -rp "Username: ($USERNAME): " choice;
-	if [ "$choice" != "" ] ; then
-		export USERNAME="$choice";
-	fi
-
-	read -rp "Password: ($PASSWORD): " choice;
-	if [ "$choice" != "" ] ; then
-		export PASSWORD="$choice";
 	fi
 
 	read -rp "IP: ($IP): " choice;
